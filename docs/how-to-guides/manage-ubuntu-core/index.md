@@ -23,6 +23,7 @@ While Ubuntu Core is a self-healing operating system, it can also boot into, or 
 - {ref}`Create a recovery system from the API <how-to-guides-manage-ubuntu-core-create-a-recovery-system-from-the-api>`
 - {ref}`Use a recovery mode <how-to-guides-manage-ubuntu-core-use-a-recovery-mode>`
 - {ref}`Troubleshooting <how-to-guides-manage-ubuntu-core-troubleshooting>`
+- {ref}`Report a bug and get help <how-to-guides-manage-ubuntu-core-report-a-bug>`
 
 ## Customize the system
 
@@ -52,3 +53,4 @@ Create a recovery system from the API <create-a-recovery-system-from-the-api>
 Set system time <set-system-time>
 Debug install modes <seed-debug>
 Troubleshooting <troubleshooting>
+Report a bug and get help <report-a-bug>

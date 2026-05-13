@@ -241,3 +241,9 @@ production/intro/ tutorials/
 production/simple/ tutorials/
 production/advance/ tutorials/
 explanation/remodelling/ explanation/remodeling/
+
+# Boot-error QR code targets (referenced from snap-bootstrap, see snapd errdocs package).
+# Per-slug /errors/<slug>/ URLs are redirected via sphinx_reredirects in conf.py
+# (it accepts fragments in targets, unlike rediraffe). This entry only handles
+# the catch-all bare path.
+errors/  how-to-guides/manage-ubuntu-core/report-a-bug/

@@ -178,7 +178,24 @@ templates_path = ["_templates"]
 # NOTE: If undefined, set to None, or empty,
 #       the sphinx_reredirects extension will be disabled.
 
-redirects = {}
+# Per-slug boot-error redirects: snap-bootstrap's failure-screen QR codes
+# point at /errors/<slug>/, which we redirect to the matching anchor inside
+# the troubleshooting page. sphinx_reredirects is used here (rather than
+# sphinxext-rediraffe) because it accepts fragments in target URLs.
+# The "../../" prefix climbs out of /errors/<slug>/ back to the docs root
+# (sphinx-reredirects writes target URLs verbatim into meta-refresh).
+_troubleshooting = "../../how-to-guides/manage-ubuntu-core/troubleshooting/"
+redirects = {
+    "errors/no-sealed-keys":          _troubleshooting + "#no-sealed-keys",
+    "errors/kernel-key-not-found":    _troubleshooting + "#fde-unlock-failed",
+    "errors/no-fde-key-protector":    _troubleshooting + "#fde-unlock-failed",
+    "errors/keyslot-missing":         _troubleshooting + "#keyslot-missing",
+    "errors/no-recovery-system":      _troubleshooting + "#no-recovery-system",
+    "errors/no-systems-seeded":       _troubleshooting + "#no-recovery-system",
+    "errors/recovery-mode-unsupported": _troubleshooting + "#recovery-mode-unsupported",
+    "errors/auth-quality":            _troubleshooting + "#auth-quality",
+    "errors/recovery-key-invalid":    _troubleshooting,
+}
 
 
 ###########################

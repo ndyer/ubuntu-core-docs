@@ -76,3 +76,80 @@ To progress from this point, you will need to enter a  previously retrieved reco
 
 See {ref}`Using recovery keys <how-to-guides-manage-ubuntu-core-use-a-recovery-mode>` for further details.
 
+(troubleshooting-no-sealed-keys)=
+## No sealed keys
+
+`error: no sealed keys`
+
+The device's `ubuntu-data` partition is encrypted but no sealed key blob was found on `ubuntu-seed`. This usually means the installation did not complete sealing, or the seed partition has been wiped or corrupted.
+
+Recovery steps:
+
+1. Boot into {ref}`recover mode <how-to-guides-manage-ubuntu-core-use-a-recovery-mode>` from the recovery system on `ubuntu-seed`.
+2. Verify that `/run/mnt/ubuntu-seed/device/fde/` contains files matching `*.sealed-key`.
+3. If the files are missing, the device must be re-installed from a recovery system. The encrypted data partition cannot be recovered without either a sealed key or the recovery key.
+
+(troubleshooting-fde-unlock-failed)=
+## FDE unlock failed
+
+`error: kernel key not found`, or `error: cannot find supported FDE key protector`.
+
+The boot process found a sealed key but could not use it to unlock the encrypted partition. Causes include a damaged TPM, a measured-boot policy change (e.g. firmware update that invalidates PCR values), or a system where the FDE key protector hook is missing.
+
+Recovery steps:
+
+1. The most reliable next step is to enter the **recovery key** when prompted (see {ref}`Ubuntu Core boot asking for recovery key <troubleshooting-no-sealed-keys>` above).
+2. If the cause was a firmware/kernel update, re-sealing the keys against the new measurements may resolve the issue.
+3. If the device repeatedly fails to unlock with both the sealed key and the recovery key, suspect TPM lockout (see {ref}`Ubuntu Core install error: TPM is in DA Lockout Mode <how-to-guides-manage-ubuntu-core-troubleshooting>` above).
+
+(troubleshooting-keyslot-missing)=
+## Keyslot missing
+
+`error: key slot reference ... not found`
+
+A LUKS2 keyslot expected by snapd is not present on the encrypted volume. This typically follows a partial re-key operation that was interrupted, or manual LUKS administration that removed a slot snapd was still tracking.
+
+Recovery steps:
+
+1. Boot into recover mode and inspect the volume with `cryptsetup luksDump /dev/<part>`.
+2. If the recovery-key slot is still present, unlock with that and re-add the run-time keyslot via the snapd FDE state API.
+3. If no usable slot remains, the data is lost and the device must be re-installed.
+
+(troubleshooting-no-recovery-system)=
+## No recovery system
+
+`error: recovery system does not exist`, or `error: no systems seeds`
+
+The bootloader was asked to enter a recovery system label that is not present on `ubuntu-seed`, or no recovery systems are seeded at all.
+
+Recovery steps:
+
+1. Check the list of available recovery systems at the bootloader menu (typically by booting and selecting **Recover**).
+2. If the desired recovery system is missing, it may have been removed; pick a different one.
+3. If *no* recovery systems are present, the seed partition is likely corrupted and the device must be re-imaged.
+
+(troubleshooting-recovery-mode-unsupported)=
+## Recovery mode unsupported
+
+`error: system mode is unsupported`
+
+The device is running an Ubuntu Core release older than UC20 and does not support the modern recovery-system workflow. The QR code on a pre-UC20 device should never link here; if it does, the device firmware or snapd version is unexpected.
+
+Recovery steps:
+
+1. Confirm the Ubuntu Core version with `snap version`.
+2. Upgrade to a supported UC20+ release using the {ref}`upgrade guide <how-to-guides-manage-ubuntu-core-upgrade-ubuntu-core>`.
+
+(troubleshooting-auth-quality)=
+## Auth quality
+
+`error: calculated entropy (... bits) is less than the required minimum entropy ...`
+
+A passphrase or PIN supplied for FDE volume authentication did not meet the entropy minimum. The volume is not unlocked.
+
+Recovery steps:
+
+1. Re-enter authentication with a longer or more complex value.
+2. If using a numeric PIN, ensure it has at least 6–8 digits.
+3. If you have lost the passphrase, fall back to the recovery key.
+
